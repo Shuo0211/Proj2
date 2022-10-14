@@ -31,8 +31,8 @@ strategy2 <- function(n,k){
   }
 }
 
-#strategy3  容易出现循环或者重复抽箱的可能
-strategy3 <- function(n){
+#strategy3  既然p已经表示的是随机的数字，那参数i是否还需要？ 容易出现循环或者重复抽箱的可能
+strategy3 <- function(n,k){
   v1 <- c(seq(1, 2*n, by=1))
   i <- sample(v1, 1, replace=FALSE) #the first box 
   v2 <- sample(v1, n, replace=FALSE)
@@ -48,11 +48,11 @@ strategy3 <- function(n){
   }
 }
 
-#1
+#1 写的有些复杂 再想想策略调用的地方怎么化简
 pone<-function(n,k,strategy,nreps){
   #give the amount of boxes, the number of prisoner, which strategy we chose and the number of 
   y <- rep(0,length(nreps))
-  if(strategy == strategy1){
+  if(strategy == "strategy1"){
     y <- rep(0,length(nreps))
     #用来记录nreps次模拟中每次囚犯查找盒子的次数
     for(i in 1:nreps){
@@ -67,23 +67,23 @@ pone<-function(n,k,strategy,nreps){
     print(prob)
   }
   
-  else if(strategy == strategy2){
+  else if(strategy == "strategy2"){
     y <- rep(0,length(nreps))
     for(i in 1:nreps){
-      strategy2(n)
-      y[i]<-strategy2(n)
+      strategy2(n,k)
+      y[i]<-strategy2(n,k)
     }
     x<-lengths(subset(y,y<=n))
     prob=x/nreps
     print(prob)
   }
   
-  else(strategy == strategy3)
+  else
   {
     y <- rep(0,length(nreps))
     for(i in 1:nreps){
-      strategy3(n)
-      y[i]<-strategy3(n)
+      strategy3(n,k)
+      y[i]<-strategy3(n,k)
     }
     x<-lengths(subset(y,y<=n))
     prob=x/nreps
