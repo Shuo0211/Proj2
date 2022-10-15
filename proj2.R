@@ -14,6 +14,7 @@ strategy1 <- function(n,k){
     p <- k == A[a,2]
     steps <- steps + 1
   }
+  return(steps)
 }
 
 #strategy 2
@@ -29,6 +30,7 @@ strategy2 <- function(n,k){
     p <- A[a,2] == k
     steps <- steps + 1
   }
+  return(steps)
 }
 
 #strategy3  既然p已经表示的是随机的数字，那参数i是否还需要？ 容易出现循环或者重复抽箱的可能
@@ -46,47 +48,45 @@ strategy3 <- function(n,k){
       steps <- steps + 1
     }
   }
+  return(steps)
 }
 
 #1 写的有些复杂 再想想策略调用的地方怎么化简
 pone<-function(n,k,strategy,nreps){
   #give the amount of boxes, the number of prisoner, which strategy we chose and the number of 
-  y <- rep(0,length(nreps))
+  y <- rep(0,nreps)
+  #用来记录nreps次模拟中每次囚犯查找盒子的次数
   if(strategy == "strategy1"){
-    y <- rep(0,length(nreps))
-    #用来记录nreps次模拟中每次囚犯查找盒子的次数
     for(i in 1:nreps){
       strategy1(n,k)
       #按照选定的strategy运行，并把找到正确数字所打开的盒子数量记录到列表中
       y[i]<-strategy1(n,k)
     }
-    x<-lengths(subset(y,y<=n))
+    x<-length(subset(y,y<=n))
     #将y列表中小于n次的实验摘出，并计算其个数为x
     prob=x/nreps
     #求成功的次数占总实验次数的比例
-    print(prob)
+    return(prob)
   }
   
   else if(strategy == "strategy2"){
-    y <- rep(0,length(nreps))
     for(i in 1:nreps){
       strategy2(n,k)
       y[i]<-strategy2(n,k)
     }
-    x<-lengths(subset(y,y<=n))
+    x<-length(subset(y,y<=n))
     prob=x/nreps
-    print(prob)
+    return(prob)
   }
   
   else
   {
-    y <- rep(0,length(nreps))
     for(i in 1:nreps){
       strategy3(n,k)
       y[i]<-strategy3(n,k)
     }
-    x<-lengths(subset(y,y<=n))
+    x<-length(subset(y,y<=n))
     prob=x/nreps
-    print(prob)
+    return(prob)
   }
 }
