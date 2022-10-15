@@ -1,28 +1,27 @@
-#strategy2&3ºÜÈİÒ×Óöµ½Ñ­»· ÊÇ·ñÓ¦¸ÃÔÚstrategyÀï¼ÓÈëÅĞ¶ÏÑ­»·»òÕß³éºĞ×Ó´ÎÊıµÄÓï¾ä£¿
-#±ÈÈç ÅĞ¶Ï³éºĞ×Ó´ÎÊıÊÇ·ñ´óÓÚ2n»òÕß²»ÔÊĞíÖØ¸´³éºĞ×Ó£¿ ²»ÖªµÀÊÇ·ñÔÊĞíÖØ¸´³éºĞ×Ó£¨¼´Ñ­»·µÄÇé¿ö£©
-
-#strategy1 ¸ÄµÄÎ»ÖÃ£º±È½Ï¶ÔÏóÊÇÇô·¸µÄ±àºÅk 
+#strategy1
 strategy1 <- function(n,k){
   v1 <- c(seq(1, 2*n, by=1))
   v2 <- sample(v1, 2*n, replace=FALSE)
-  A <- cbind(v1,v2)  #start
-  a <- A[k,1] #µÚÒ»¸öºĞ×ÓÀïµÄ±àÂë£¬·ÅÔÚÏÂÃæÑ­»·
+  A <- cbind(v1,v2)
+  #i <- sample(v1, 1, replace=FALSE) #number of prisoner #start
+  a <- A[k,1]
   steps <- 1
-  p <- k == A[k,2]
+  p <- a == A[k,2]
   while (p == FALSE) {
-    a <- match(c(A[a,2]),v1)
-    p <- k == A[a,2]
+    k <- match(c(A[k,2]),v1)
+    p <- a == A[k,2]
     steps <- steps + 1
   }
   return(steps)
 }
 
-#strategy 2
+#strategy 2 (Revised)
 strategy2 <- function(n,k){
   v1 <- c(seq(1, 2*n, by=1))
   v2 <- sample(v1, 2*n, replace=FALSE)
   A <- cbind(v1,v2)
-  a <- sample(v1, 1, replace=FALSE) #the first box is random
+  #i <- sample(v1, 1, replace=FALSE) #number of prisoner #start
+  a <- sample(v1, 1, replace=FALSE)  #number of box
   steps <- 1
   p <- A[a,2] == k
   while (p == FALSE) {
@@ -33,46 +32,52 @@ strategy2 <- function(n,k){
   return(steps)
 }
 
-#strategy3  ¼ÈÈ»pÒÑ¾­±íÊ¾µÄÊÇËæ»úµÄÊı×Ö£¬ÄÇ²ÎÊıiÊÇ·ñ»¹ĞèÒª£¿ ÈİÒ×³öÏÖÑ­»·»òÕßÖØ¸´³éÏäµÄ¿ÉÄÜ
+#strategy 3 (Revised)
 strategy3 <- function(n,k){
   v1 <- c(seq(1, 2*n, by=1))
-  i <- sample(v1, 1, replace=FALSE) #the first box 
-  v2 <- sample(v1, n, replace=FALSE)
-  steps <- 0
+  #i <- sample(v1, 1, replace=FALSE) #number of prisoner #start
+  a <- sample(v1, n, replace=FALSE)
+  b <- 0
   for (p in a){
     if (p == k){
-      steps <- steps + 1
+      b <- b + 1
       break
+    }else{
+      b <- b + 1
     }
-    else{
+  }
+  steps <- b
+  if (steps == n){
+    if (a[n] != k)
       steps <- steps + 1
-    }
+  }else{
+    steps <- steps
   }
   return(steps)
 }
 
-#1 Ğ´µÄÓĞĞ©¸´ÔÓ ÔÙÏëÏë²ßÂÔµ÷ÓÃµÄµØ·½ÔõÃ´»¯¼ò
+#1 å†™çš„æœ‰äº›å¤æ‚ å†æƒ³æƒ³ç­–ç•¥è°ƒç”¨çš„åœ°æ–¹æ€ä¹ˆåŒ–ç®€
 pone<-function(n,k,strategy,nreps){
   #give the amount of boxes, the number of prisoner, which strategy we chose and the number of 
   y <- rep(0,nreps)
-  #ÓÃÀ´¼ÇÂ¼nreps´ÎÄ£ÄâÖĞÃ¿´ÎÇô·¸²éÕÒºĞ×ÓµÄ´ÎÊı
+  #ç”¨æ¥è®°å½•nrepsæ¬¡æ¨¡æ‹Ÿä¸­æ¯æ¬¡å›šçŠ¯æŸ¥æ‰¾ç›’å­çš„æ¬¡æ•°
   if(strategy == "strategy1"){
+    #ç”¨æ¥è®°å½•nrepsæ¬¡æ¨¡æ‹Ÿä¸­æ¯æ¬¡å›šçŠ¯æŸ¥æ‰¾ç›’å­çš„æ¬¡æ•°
     for(i in 1:nreps){
       strategy1(n,k)
-      #°´ÕÕÑ¡¶¨µÄstrategyÔËĞĞ£¬²¢°ÑÕÒµ½ÕıÈ·Êı×ÖËù´ò¿ªµÄºĞ×ÓÊıÁ¿¼ÇÂ¼µ½ÁĞ±íÖĞ
+      #æŒ‰ç…§é€‰å®šçš„strategyè¿è¡Œï¼Œå¹¶æŠŠæ‰¾åˆ°æ­£ç¡®æ•°å­—æ‰€æ‰“å¼€çš„ç›’å­æ•°é‡è®°å½•åˆ°åˆ—è¡¨ä¸­
       y[i]<-strategy1(n,k)
     }
     x<-length(subset(y,y<=n))
-    #½«yÁĞ±íÖĞĞ¡ÓÚn´ÎµÄÊµÑéÕª³ö£¬²¢¼ÆËãÆä¸öÊıÎªx
+    #å°†yåˆ—è¡¨ä¸­å°äºnæ¬¡çš„å®éªŒæ‘˜å‡ºï¼Œå¹¶è®¡ç®—å…¶ä¸ªæ•°ä¸ºx
     prob=x/nreps
-    #Çó³É¹¦µÄ´ÎÊıÕ¼×ÜÊµÑé´ÎÊıµÄ±ÈÀı
+    #æ±‚æˆåŠŸçš„æ¬¡æ•°å æ€»å®éªŒæ¬¡æ•°çš„æ¯”ä¾‹
     return(prob)
   }
   
-  else if(strategy == "strategy2"){
-    for(i in 1:nreps){
-      strategy2(n,k)
-      y[i]<-strategy2(n,k)
+  else if(strategy == "strategy2"){   #doesnt work
+    for(i in 1:nreps){ #doesnt work
+      strategy2(n,k) #doesnt stop here,k)
     }
     x<-length(subset(y,y<=n))
     prob=x/nreps
