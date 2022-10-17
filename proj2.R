@@ -1,19 +1,19 @@
-strategy <- function(i,n,k,v1,v2){
+strategies <- function(n,k,strategy,v1,v2){
   A <- cbind(v1,v2)
-  if (i==1){
-    #strategy[1] <- function(n,k){
+  if (strategy == 1){
+    #strategy[1]
     a <- A[k,1]
     steps <- 1
     p <- a == A[k,2]
-    while (p == FALSE) {
+    while (p == FALSE && steps<(2*n)) {
       k <- match(c(A[k,2]),v1)
       p <- a == A[k,2]
       steps <- steps + 1
     }
     return(steps)
   }
-  else if (i==2){
-    #strategy[2] <- function(n,k){
+  else if (strategy==2){
+    #strategy[2] 
     a <- sample(v1, 1, replace=FALSE)  #number of box
     steps <- 1
     p <- A[a,2] == k
@@ -25,7 +25,7 @@ strategy <- function(i,n,k,v1,v2){
     return(steps)
   }
   else{
-    #strategy[3] <- function(n,k){
+    #strategy[3] 
     a <- sample(v1, n, replace=FALSE)
     b <- 0
     for (p in a){
@@ -49,38 +49,73 @@ strategy <- function(i,n,k,v1,v2){
 
 pone<-function(n,k,strategy,nreps){
   #give the amount of boxes, the number of prisoner, which strategy we chose and the number of 
-  y <- c()
+  y <- rep(0,nreps)
   for(i in 1:nreps){
-    v1 <- c(seq(1, (2*n), by=1))
-    v2 <- sample(v1, (2*n), replace=FALSE)
-    strategy(strategy,n,k,v1,v2)
-    y[i]<-strategy(strategy,n,k,v1,v2)
+    v1 <- c(seq(1, 2*n, by=1))
+    v2 <- sample(v1, 2*n, replace=FALSE)
+    y[i]<-strategies(n,k,strategy,v1,v2)
   }
   x<-length(subset(y,y<=n))
   prob=x/nreps
   return(prob)
 }
 
+pone(5,3,1,10000)
+#Output [1] 0.501
+pone(5,3,2,10000)
+#Output [1] 0.4001
+pone(5,3,3,10000)
+#Output [1] 0.4948
+pone(50,5,1,10000)
+#Output [1] 0.4885
+pone(50,5,2,10000)
+#Output [1] 0.3834
+pone(50,5,3,10000)
+#Output [1] 0.4982
+
 pall <- function(n,strategy,nreps){
-  z<- c()
-  for (j in 1:nreps){
-    v1 <- c(seq(1, (2*n), by=1))
-    v2 <- sample(v1, (2*n), replace=FALSE)
-    y<-c()
-    for (l in 1:(2*n)){
-      strategy(strategy,n,l,v1,v2)
-      y[l]<-strategy(strategy,n,l,v1,v2)
+  if(strategy == 3){
+    l <- c()
+    prob <- c(1)
+    b <- c(0)
+    for (k in 1:(2*n)){
+      l[k] <- pone(n,k,strategy,nreps)
+      b <- prob * l[k]
+      prob <- b
     }
-    if(length(subset(y,y>n)) >1){
-      z[j]<-0
-    }else{
-      z[j]<-1
+  }else{
+    z<- rep(0,nreps)
+    for (j in 1:nreps){
+      y<-c()
+      v1 <- c(seq(1, 2*n, by=1))
+      v2 <- sample(v1, 2*n, replace=FALSE)
+      for (k in 1:(2*n)){
+        y[k]<-strategies(n,k,strategy,v1,v2)
+      }
+      if(length(subset(y,y>n)) >= 1){
+        z[j]<-0
+      }else{
+        z[j]<-1
+      }
     }
+    x<-length(subset(z,z>=1))
+    prob<-x/nreps
   }
-  x<-length(subset(z,z==1))
-  prob<-x/nreps
   return(prob)
 }
+
+pall(5,1,10000)
+#Output [1] 0.3546
+pall(5,2,10000)
+#Output [1] 3e-04
+pall(5,3,10000)
+#Output [1] 0.0009783905
+pall(50,1,10000)
+#Output [1] 0.3045
+pall(50,2,10000)
+#Output [1] 0
+pall(50,3,10000)
+#Output [1] 7.101905e-31
 
 dloop <- function(n,nreps){
   loopr <- c()
@@ -111,24 +146,5 @@ dloop <- function(n,nreps){
   return(loop)
 }
 
-
-#不知道统计量是否可以直接用概率来算  明天再问问其他同学
-pall <- function(n,strategy,nreps){
-  if(strategy == 3){
-    l <- c()
-    prob <- c(1)
-    b <- c(0)
-    for (k in 1:(2*n)){
-      l[k] <- pone(n,k,strategy,nreps)
-      b <- prob * l[k]
-      prob <- b
-    }else{
-      
-      for (k in 1:(2*n)){
-        
-        
-      }
-    }
-    return(prob)
-  }
-  
+sum(dloop(50,10000)[1:50])
+# Output [1] 0.496321
