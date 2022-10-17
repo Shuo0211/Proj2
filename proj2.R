@@ -22,7 +22,7 @@ strategy2 <- function(n,k){
   a <- sample(v1, 1, replace=FALSE)  #number of box
   steps <- 1
   p <- A[a,2] == k
-  while (p == FALSE) {
+  while (p == FALSE && steps<(2*n)) {
     a <- match(c(A[a,2]),v1)
     p <- A[a,2] == k
     steps <- steps + 1
@@ -90,22 +90,44 @@ pone<-function(n,k,strategy,nreps){
 }
 
 pall <- function(n,strategy,nreps){
-  l <- c()
-  b <- c(1)
-  prob <- c(0)
-  for (k in 1:(2*n)){
-    l[k] <- pone(n,k,strategy,nreps)
-    prob <- b * l[k]
-    b <- prob
+  v <- sum(1/c(seq(n+1, 2*n, by=1)))
+  if(strategy == "strategy3"){
+    l <- c()
+    b <- c(1)
+    prob <- c(0)
+    for (k in 1:(2*n)){
+      l[k] <- pone(n,k,strategy,nreps)
+      prob <- b * l[k]
+      b <- prob
+    }
+  }else{
+    b<-1-v
   }
   return(b)
 }
 
+
+#example codes
+pone(5,1,"strategy1",10000)   #Output: prob = 0.4929
+pone(5,1,"strategy2",10000)   #Output: prob = 0.4092
+pone(5,1,"strategy3",10000)   #Output: prob = 0.4966
+pone(50,1,"strategy1",10000)  #Output: prob = 0.4992
+pone(50,1,"strategy2",10000)  #Output: prob = 
+pone(50,1,"strategy3",10000)  #Output: prob = 0.5053
+
+
+pall(5,"strategy1",10000)     #Output: prob = 0.3543651
+pall(5,"strategy2",10000)     #Output: prob = 0.3543651
+pall(5,"strategy3",10000)     #Output: prob = 0.001034689
+pall(50,"strategy1",10000)    #Output: prob = 0.3118278
+pall(50,"strategy2",10000)    #Output: prob = 0.3118278
+pall(50,"strategy3",10000)    #Output: prob = 8.29235e-31
+
+
+
 dloop <- function(n,nreps){
-  
-  
+  loopr <- c()
   for(i in 1:nreps){
-    
     v1 <- c(seq(1, 2*n, by=1))
     v2 <- sample(v1, 2*n, replace=FALSE)
     A <- cbind(v1,v2)
@@ -121,8 +143,18 @@ dloop <- function(n,nreps){
       }
       loopn[k] <- steps
     }
-    
+    loopr = append(loopr, loopn)
   }
+  sort_loopr <- sort(loopr)
+  uni_loopr <- unique(sort_loopr)
+  ma_loopr <- match(sort_loopr,uni_loopr)
+  prob_loopr <- tabulate(ma_loopr)/length(loopr)
+  loop <- rep(0, 2*n)
+  loop[uni_loopr] <- prob_loopr
+  return(loop)
 }
+
+#example code
+dloop(50,10000) 
 
 
