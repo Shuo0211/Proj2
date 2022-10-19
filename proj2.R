@@ -146,5 +146,9 @@ dloop <- function(n,nreps){
   return(loop)
 }
 
-sum(dloop(50,10000)[1:50])
+dl<-dloop(50,10000)[1:50]
+sum(dl)
 # Output [1] 0.496321
+plot(dl,main="the probability no loop longer than 50",xlab="the length of a loop",ylab="the probability of each loop")
+lm(formula=dl~c(1:50))# linear regressions on the data to assess overall trends
+abline(lm(dl~c(1:50)))
