@@ -1,7 +1,14 @@
-#member of groups: Yan Chen s2318048, Shuo Wang s2439249, Yuxin Yangs2163400 
-#address of github repo: https://github.com/Shuo0211/Proj2.git
-#contribution:
-
+"members of group: Yan Chen s2318048, Shuo Wang s2439249, Yuxin Yang s2163400" 
+"address of github repo: https://github.com/Shuo0211/Proj2.git"
+"Team work contribution: 
+@Shuo Wang takes part in strategies function and optimizes the computer cost for 
+pall and dloop functions.  
+@Yuxin Yang focuses on pall, dloop function and the discription of overview. 
+@Yan Chen takes part in pone function，revises strategies function and visualizes
+dloop function for n=1:50. 
+Proportion of the work for each member is about 1/3. All three members
+work together and discuss closely to figure out the project. "  
+ 
 "Overview: The whole file is about the prisoner problem which is that 
 the prisoners choose half amount of the boxes and find the card in boxes 
 writing the same number with themselves. The number of the boxes is the 
@@ -32,7 +39,7 @@ strategies <- function(n,k,strategy,v1,v2){
     steps <- 1
     found <- start == A[k,2] 
     #check if k-th prisoner found number k from the k-th box
-    while (found == FALSE && steps<(2*n)) {
+    while (found == FALSE) {
       k <- match(c(A[k,2]),v1) 
       #find the next box labeled with the number found before
       found <- start == A[k,2] 
@@ -188,12 +195,12 @@ dloop <- function(n, nreps){
         next #reason: all elements in a circle have the same length
       start <- k
       steps <- 1
-      check <- start == cards[k]
-      while(check == FALSE){
+      found <- start == cards[k]
+      while(found == FALSE){
         avoid_vec = append(avoid_vec, cards[k]) 
         #stores all numbers of cards from a single circle in avoid_vec
         k <- cards[k]
-        check <- start == cards[k]
+        found <- start == cards[k]
         steps <- steps + 1
       }
       if(mark_vec[steps] == 0)
@@ -215,7 +222,7 @@ dl<-dloop(50,10000)[1:50]
 sum(dl)
 #probability that there is no loop longer than 50 in a random reshuffling of 
 #cards to boxes
-# Output [1] 0.496321
+# Output [1] 3.855
 
 
 plot(dl,main="the probability no loop longer than 50",xlab="the length of a loop",ylab="the probability of each loop")
